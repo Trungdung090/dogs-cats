@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/mystyle.css') }}">
+    <script defer src="{{ url_for('static', filename='js/myjs1.js') }}"></script>
+</head>
+<body>
+<div class="container">
+    <header>
+        <h1>Phân loại giống chó mèo</h1>
+    </header>
+
+    <section class="upload-section">
+        <input type="file" id="uploadInput" accept="image/*">
+        <button onclick="uploadImage()">Upload</button>
+        <button id="classifyButton" onclick="classifyImage()">Phân loại</button>
+    </section>
+
+    <section class="result-section">
+        <h3>Kết quả phân loại</h3>
+        <p id="classificationResult">Chưa có kết quả</p>
+        <img id="uploadedImage" src="" style="display:none; max-width:300px; margin-top:10px;">
+    </section>
+
+    <section class="log-section">
+        <h2>Lịch sử</h2>
+            <button onclick="resetDatabase()">Reset Database</button>
+        <!-- Modal hiển thị ảnh lớn -->
+        <div id="imageModal" class="modal">
+            <span class="close">&times;</span>
+            <img class="modal-content" id="fullImage">
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>STT</th>
+                    <th>Thời gian</th>
+                    <th>Giống</th>
+                    <th>Ảnh</th>
+                </tr>
+            </thead>
+            <tbody id="log-table-body"></tbody>
+        </table>
+    </section>
+</div>
+</body>
+</html>
