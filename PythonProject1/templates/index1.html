@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/mystyle.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script defer src="{{ url_for('static', filename='js/myjs1.js') }}"></script>
 </head>
 <body>
@@ -14,7 +15,7 @@
 
     <section class="upload-section">
         <input type="file" id="uploadInput" accept="image/*">
-        <button onclick="uploadImage()">Upload</button>
+        <button onclick="uploadImage()">Tải lên</button>
         <button id="classifyButton" onclick="classifyImage()">Phân loại</button>
     </section>
 
@@ -24,9 +25,15 @@
         <img id="uploadedImage" src="" style="display:none; max-width:300px; margin-top:10px;">
     </section>
 
+    <section class="chart-section">
+        <h2>Thống kê số lượng giống chó mèo</h2>
+        <canvas id="breedChart"></canvas>
+    </section>
+
     <section class="log-section">
-        <h2>Lịch sử</h2>
-            <button onclick="resetDatabase()">Reset Database</button>
+        <h2>Lịch sử phân loại</h2>
+            <button onclick="resetDatabase()">Xóa lịch sử</button>
+
         <!-- Modal hiển thị ảnh lớn -->
         <div id="imageModal" class="modal">
             <span class="close">&times;</span>

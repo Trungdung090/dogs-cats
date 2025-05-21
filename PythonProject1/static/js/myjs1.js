@@ -16,7 +16,7 @@ function updateLogs() {
     fetch('/access_control')
         .then(response => response.json())
         .then(data => {
-            console.log("📜 Dữ liệu logs nhận được:", data);  // Debug
+            console.log("Dữ liệu logs nhận được:", data);  // Debug
             let tableBody = document.getElementById('log-table-body');
             tableBody.innerHTML = '';     // Xóa dữ liệu cũ
             data.forEach(log => {
@@ -49,6 +49,41 @@ function showImage(imageSrc) {
     modal.onclick = function () {
         modal.style.display = "none";
     };
+}
+
+function updateChart() {
+    fetch('/stats')
+        .then(response => response.json())
+        .then(data => {
+            console.log("📊 Dữ liệu thống kê:", data); // Debug
+            let breeds = Object.keys(data);
+            let counts = Object.values(data);
+
+            let ctx = document.getElementById("breedChart").getContext("2d");
+            if (window.myChart) {
+                window.myChart.destroy();   // Xóa biểu đồ cũ nếu có
+            }
+            window.myChart = new Chart(ctx, {
+                type: "bar",
+                data: {
+                    labels: breeds,
+                    datasets: [{
+                        label: "Số lượng",
+                        data: counts,
+                        backgroundColor: "rgba(75, 192, 192, 0.6)",
+                        borderColor: "rgba(75, 192, 192, 1)",
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: { beginAtZero: true }
+                    }
+                }
+            });
+        })
+        .catch(error => console.error("Lỗi khi tải dữ liệu thống kê:", error));
 }
 
 // Khi chọn ảnh, hiển thị ảnh ngay lập tức trước khi tải lên
@@ -141,3 +176,5 @@ function resetDatabase() {
 // Cập nhật ảnh và log mỗi 5 giây
 setInterval(updateImage, 5000);
 setInterval(updateLogs, 5000);
+// Cập nhật biểu đồ mỗi 5 giây
+setInterval(updateChart, 5000);
