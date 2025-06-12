@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Chi tiết bài viết</title>
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<!--      <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/blog_detail.css') }}">-->
+      <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+      <style>
+        * {
+           margin: 0;
+           padding: 0;
+           box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+        }
+
+        /* Navigation Bar */
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .logo {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 1.8rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none; /* bỏ gạch chân */
+        }
+
+        .logo i {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-links {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            align-items: center;
+        }
+
+        .main-links {
+            display: flex;
+            gap: 2rem;
+            margin-left: 3rem;
+        }
+
+        .auth-links {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: #4a5568;
+            text-decoration: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-links a:hover {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .nav-links a.active {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: #4a5568;
+            cursor: pointer;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .blog-detail {
+              max-width: 800px;
+              margin: auto;
+              background: white;
+              padding: 2rem;
+              border-radius: 15px;
+              box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        .blog-meta {
+              color: #6b7280;
+              margin-bottom: 1rem;
+        }
+        .blog-detail img {
+              margin-bottom: 1.5rem;
+              width: 70%;
+              max-width: 300px;
+              display: block;
+              margin: 0 auto 1.5rem auto;
+              border-radius: 10px;
+        }
+            .blog-content {
+              line-height: 1.8;
+              color: #333;
+            }
+            .back-btn {
+              display: inline-block;
+              margin-top: 2rem;
+              background: #667eea;
+              color: white;
+              padding: 0.75rem 1.5rem;
+              border-radius: 25px;
+              text-decoration: none;
+              font-weight: 600;
+            }
+            .back-btn:hover {
+              background: #5a67d8;
+            }
+      </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="/" class="logo">
+            <i class="fas fa-paw"></i>
+            <span>PetClassifier</span>
+        </a>
+        <div class="nav-links">
+            <div class="main-links">
+                <a href="/"><i class="fas fa-home"></i> Trang chủ</a>
+                <a href="/classify"><i class="fas fa-search"></i> Phân loại</a>
+<!--                <a href="/statistics"><i class="fas fa-chart-bar"></i> Thống kê</a>-->
+                <a href="/blog"><i class="fas fa-newspaper"></i> Tin Tức</a>
+<!--                <a href="/forum"><i class="fas fa-comments"></i> Diễn đàn</a>-->
+            </div>
+            <div class="auth-links">
+                {% if session.get('role') == 'admin' %}
+                    <a href="/admin"><i class="fas fa-cog"></i> Admin</a>
+                    <a href="/logout" class="logout-btn">
+                        <i class="fas fa-sign-out-alt"></i> Đăng xuất
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+        <div class="menu-toggle">
+            <i class="fas fa-bars"></i>
+        </div>
+    </nav>
+
+     <div class="container">
+         <div class="blog-detail" style="max-width: 800px; margin: auto; background: white; padding: 2rem; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
+             <h1 id="postTitle">Đang tải...</h1>
+             <div class="blog-meta" id="postMeta" style="color: #6b7280; margin-bottom: 1rem;"></div>
+             <img id="postImage" src="" alt="Ảnh bài viết" style="width: 100%; border-radius: 10px; margin-bottom: 1.5rem;">
+             <div class="blog-content" id="postContent" style="line-height: 1.8; color: #333;"></div>
+             <a href="/blog" class="back-btn">← Quay lại Blog</a>
+<!--             <a href="/blog.html" class="back-btn" style="display: inline-block; margin-top: 2rem; background: #667eea; color: white; padding: 0.75rem 1.5rem; border-radius: 25px; text-decoration: none; font-weight: 600;">-->
+<!--                 <i class="fas fa-arrow-left"></i> Quay lại Blog-->
+<!--             </a>-->
+        </div>
+    </div>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const slug = urlParams.get('slug');
+        const posts = {
+              'cham-soc-meo-con': {
+                    title: 'Cách chăm sóc mèo con',
+                    author: 'Monspet',
+                    date: '–',
+                    image_url: '/static/images/poodle.jpg',
+                    content: `<p>Tạo không gian an toàn, chuẩn bị khay vệ sinh, đồ chơi và chế độ ăn uống hợp lý cho mèo con.</p>
+                    <p>Xem bài viết đầy đủ tại <a href="https://monspet.com/cach-cham-soc-meo-con" target="_blank">monspet.com</a>.</p>`
+              },
+              'huong-dan-cham-soc-cho-meo': {
+                    title: 'Hướng dẫn chăm sóc chó mèo',
+                    author: 'Fago Pet',
+                    date: '–',
+                    image_url: 'static/images/pomeranian.jpg',
+                    content: `<p>Lịch trình sinh hoạt, khám sức khỏe, vệ sinh định kỳ và ăn uống đầy đủ cho thú cưng.</p>
+                    <p>Chi tiết xem tại <a href="https://fagopet.vn/cach-cham-soc-cho-meo/" target="_blank">fagopet.vn</a>.</p>`
+              },
+              'kinh-nghiem-cham-soc-meo': {
+                    title: 'Chăm sóc mèo: kinh nghiệm vàng',
+                    author: 'PetHealth',
+                    date: '–',
+                    image_url: '/static/images/ragdoll.jpg',
+                    content: `<p>Khám sức khỏe định kỳ, vệ sinh lông và da đúng cách, chải lông thường xuyên.</p>
+                    <p>Xem chi tiết tại <a href="https://pethealth.vn/blogs/kien-thuc/cham-soc-meo" target="_blank">pethealth.vn</a>.</p>`
+              },
+              'che-do-dinh-duong-cho-cho': {
+                    title: 'Dinh dưỡng cho chó theo từng giai đoạn tuổi',
+                    author: 'PetMart',
+                    date: '–',
+                    image_url: '/static/images/beagle.jpg',
+                    content: `<p>Hướng dẫn chọn khẩu phần ăn cho chó con, chó trưởng thành và chó già dựa theo nhu cầu dinh dưỡng và sức khỏe.</p>
+                    <p>Xem chi tiết tại <a href="https://www.petmart.vn/che-do-dinh-duong-cho-cho" target="_blank">petmart.vn</a>.</p>`
+              },
+              '7-dau-hieu-meo-bi-benh': {
+                    title: '7 dấu hiệu mèo đang bị bệnh mà bạn không nên bỏ qua',
+                    author: 'Cityzoo',
+                    date: '–',
+                    image_url: '/static/images/maine-coon.jpg',
+                    content: `<p>Mèo thường giấu bệnh rất kỹ, bài viết chỉ ra các biểu hiện phổ biến giúp bạn sớm phát hiện vấn đề sức khỏe.</p>
+                    <p>Xem chi tiết tại <a href="https://cityzoo.vn/7-dau-hieu-meo-bi-benh" target="_blank">cityzoo.vn</a>.</p>`
+              }
+        };
+
+        const post = posts[slug];
+        if (post) {
+              document.getElementById('postTitle').innerText = post.title;
+              document.getElementById('postMeta').innerHTML = `<i class="fas fa-user"></i> ${post.author}`;
+              document.getElementById('postImage').src = post.image_url;
+              document.getElementById('postContent').innerHTML = post.content;
+        } else {
+              document.querySelector('.blog-detail').innerHTML = '<p>Không tìm thấy bài viết.</p><a href="/blog" class="back-btn">Quay lại Blog</a>';
+        }
+    </script>
+</body>
+</html>

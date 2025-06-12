@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🐾 Thống kê phân loại</title>
+    <script src="https://kit.fontawesome.com/your-kit.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="/static/js/statistics.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/statistics.css">
+</head>
+<body>
+    <nav class="navbar">
+        <a href="/" class="logo">
+            <i class="fas fa-paw"></i>
+            <span>PetClassifier</span>
+        </a>
+        <div class="nav-links">
+            <div class="main-links">
+                <a href="/"><i class="fas fa-home"></i> Trang chủ</a>
+                <a href="/classify"><i class="fas fa-search"></i> Phân loại</a>
+                <a href="/statistics"><i class="fas fa-chart-bar"></i> Thống kê</a>
+                <a href="/blog"><i class="fas fa-newspaper"></i> Tin Tức</a>
+<!--                <a href="/forum"><i class="fas fa-comments"></i> Diễn đàn</a>-->
+            </div>
+            <div class="auth-links">
+                {% if session.get('role') == 'admin' %}
+                    <a href="/admin"><i class="fas fa-cog"></i> Admin</a>
+                    <a href="/logout" class="logout-btn">
+                        <i class="fas fa-sign-out-alt"></i> Đăng xuất
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="page-header">
+            <h1><i class="fas fa-chart-line"></i> Thống kê và Phân tích</h1>
+            <p>Tổng quan về hoạt động phân loại giống chó mèo</p>
+        </div>
+
+        <div class="stats-overview">
+            <div class="stat-card">
+                <i class="fas fa-images"></i>
+                <div class="stat-number" id="totalImages">0</div>
+                <div class="stat-label">Tổng ảnh đã phân loại</div>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-percentage"></i>
+                <div class="stat-number" id="avgAccuracy">0%</div>
+                <div class="stat-label">Độ chính xác trung bình</div>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-trophy"></i>
+                <div class="stat-number" id="popularBreed">---</div>
+                <div class="stat-label">Giống phổ biến nhất</div>
+            </div>
+        </div>
+
+        <div class="charts-section">
+            <div class="chart-card">
+                <h3 class="chart-title">Phân bố theo giống</h3>
+                <canvas id="breedChart"></canvas>
+            </div>
+            <div class="chart-card">
+                <h3 class="chart-title">Hoạt động theo thời gian</h3>
+                <canvas id="timeChart"></canvas>
+            </div>
+        </div>
+
+        <div class="recent-classifications">
+            <h3 class="chart-title">Phân loại gần đây</h3>
+            <div id="recentClassifications"></div>
+        </div>
+    </div>
+</body>
+</html>

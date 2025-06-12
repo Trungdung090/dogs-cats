@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🐾 Blog & Tin tức</title>
+    <script defer src="{{ url_for('static', filename='js/blog.js') }}"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/blog.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <a href="/" class="logo">
+            <i class="fas fa-paw"></i>
+            <span>PetClassifier</span>
+        </a>
+        <div class="nav-links">
+            <div class="main-links">
+                <a href="/"><i class="fas fa-home"></i> Trang chủ</a>
+                <a href="/classify"><i class="fas fa-search"></i> Phân loại</a>
+<!--                <a href="/statistics"><i class="fas fa-chart-bar"></i> Thống kê</a>-->
+                <a href="/blog"><i class="fas fa-newspaper"></i> Tin Tức</a>
+<!--                <a href="/forum"><i class="fas fa-comments"></i> Diễn đàn</a>-->
+            </div>
+            <div class="auth-links">
+                {% if session.get('role') == 'admin' %}
+                    <a href="/admin"><i class="fas fa-cog"></i> Admin</a>
+                    <a href="/logout" class="logout-btn">
+                        <i class="fas fa-sign-out-alt"></i> Đăng xuất
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+        <div class="menu-toggle">
+            <i class="fas fa-bars"></i>
+        </div>
+    </nav>
+
+    <div class="container">
+         <div class="page-header">
+             <h1><i class="fas fa-newspaper"></i> Blog & Tin tức</h1>
+             <p>Cập nhật những thông tin mới nhất về chó mèo</p>
+         </div>
+
+         <div class="blog-filters">
+             <button class="filter-btn active" data-category="all">Tất cả</button>
+             <button class="filter-btn" data-category="tips">Chăm sóc</button>
+             <button class="filter-btn" data-category="health">Sức khỏe</button>
+         </div>
+
+         <div class="blog-grid" id="blogGrid">
+              <article class="blog-card" data-category="tips">
+                   <img src="static/images/poodle.jpg" class="blog-image" alt="">
+                   <div class="blog-content">
+                       <span class="blog-category">Chăm sóc</span>
+                       <a href="{{ url_for('blog_detail') }}?slug=cham-soc-meo-con" class="blog-title-link">
+                          <h3 class="blog-title">Cách chăm sóc mèo con</h3>
+                       </a>
+                       <p class="blog-excerpt">Tạo không gian an toàn, chuẩn bị khay vệ sinh, đồ chơi và chế độ ăn uống hợp lý...</p>
+                       <a href="{{ url_for('blog_detail') }}?slug=cham-soc-meo-con" class="read-more">Xem chi tiết</a>
+                   </div>
+              </article>
+              <article class="blog-card" data-category="health">
+                   <img src="static/images/pomeranian.jpg" class="blog-image" alt="">
+                   <div class="blog-content">
+                       <span class="blog-category">Sức khỏe</span>
+                       <a href="{{ url_for('blog_detail') }}?slug=huong-dan-cham-soc-cho-meo" class="blog-title-link">
+                           <h3 class="blog-title">Hướng dẫn chăm sóc chó mèo</h3>
+                       </a>
+                       <p class="blog-excerpt">Lịch trình sinh hoạt, khám sức khỏe và các lưu ý cần thiết cho thú cưng...</p>
+                       <a href="{{ url_for('blog_detail') }}?slug=huong-dan-cham-soc-cho-meo" class="read-more">Xem chi tiết</a>
+                   </div>
+              </article>
+              <article class="blog-card" data-category="tips">
+                   <img src="static/images/ragdoll.jpg" class="blog-image" alt="">
+                   <div class="blog-content">
+                       <span class="blog-category">Chăm sóc</span>
+                       <a href="{{ url_for('blog_detail') }}?slug=kinh-nghiem-cham-soc-meo" class="blog-title-link">
+                           <h3 class="blog-title">Chăm sóc mèo: kinh nghiệm vàng</h3>
+                       </a>
+                       <p class="blog-excerpt">Khám sức khỏe định kỳ, vệ sinh lông và chế độ ăn uống hợp lý cho mèo nhà...</p>
+                       <a href="{{ url_for('blog_detail') }}?slug=kinh-nghiem-cham-soc-meo" class="read-more">Xem chi tiết</a>
+                   </div>
+              </article>
+              <article class="blog-card" data-category="tips">
+                   <img src="static/images/beagle.jpg" class="blog-image" alt="">
+                   <div class="blog-content">
+                       <span class="blog-category">Chăm sóc</span>
+                       <a href="{{ url_for('blog_detail') }}?slug=che-do-dinh-duong-cho-cho" class="blog-title-link">
+                           <h3 class="blog-title">Dinh dưỡng cho chó theo từng giai đoạn tuổi</h3>
+                       </a>
+                       <p class="blog-excerpt">Hướng dẫn chọn khẩu phần ăn cho chó con, chó trưởng thành và chó già dựa theo nhu cầu dinh dưỡng và sức khỏe....</p>
+                       <a href="{{ url_for('blog_detail') }}?slug=che-do-dinh-duong-cho-cho" class="read-more">Xem chi tiết</a>
+                   </div>
+              </article>
+              <article class="blog-card" data-category="health">
+                   <img src="static/images/maine-coon.jpg" class="blog-image" alt="">
+                   <div class="blog-content">
+                       <span class="blog-category">Sức khỏe</span>
+                       <a href="{{ url_for('blog_detail') }}?slug=7-dau-hieu-meo-bi-benh" class="blog-title-link">
+                           <h3 class="blog-title">7 dấu hiệu mèo đang bị bệnh mà bạn không nên bỏ qua</h3>
+                       </a>
+                       <p class="blog-excerpt">Mèo thường giấu bệnh rất kỹ, bài viết chỉ ra các biểu hiện phổ biến giúp bạn sớm phát hiện vấn đề sức khỏe...</p>
+                       <a href="{{ url_for('blog_detail') }}?slug=7-dau-hieu-meo-bi-benh" class="read-more">Xem chi tiết</a>
+                   </div>
+              </article>
+         </div>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <p>&copy; 2024 PetClassifier. All rights reserved. Made with ❤️ for pet lovers</p>
+        </div>
+    </footer>
+</body>
+</html>

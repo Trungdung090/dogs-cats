@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🐾 Phân loại giống chó mèo</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/forum.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<!--    <script defer src="{{ url_for('static', filename='js/forum.js') }}"></script>-->
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">
+            <i class="fas fa-paw"></i>
+            <span>PetClassifier</span>
+        </div>
+        <div class="nav-links">
+            <div class="main-links">
+                <a href="/" class="{{ 'active' if request.path == '/home' }}"><i class="fas fa-home"></i> Trang chủ</a>
+                <a href="/classify" class="{{ 'active' if request.path == 'classify_page' }}"><i class="fas fa-search"></i> Phân loại</a>
+<!--                <a href="/forum" class="{{ 'active' if request.path == '/forum' }}"><i class="fas fa-comments"></i> Diễn đàn</a>-->
+            </div>
+            <div class="auth-links">
+                {% if 'user_id' in session %}
+                    <a href="/profile" class="user-profile">
+                        <!--<img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='16' fill='%23667eea'/%3E%3Ctext x='16' y='20' text-anchor='middle' fill='white' font-family='Arial' font-size='12'%3EU%3C/text%3E%3C/svg%3E"-->
+<!--                            alt="Avatar" class="user-avatar">-->
+<!--                        <span>User</span>-->
+                        <img src="{{ url_for('static', filename='images/avatars/' + session.get('avatar', 'default.jpg')) }}"
+                             alt="Avatar" class="user-avatar">
+                        <span>{{ session['username'] }}</span>
+                    </a>
+                    <a href="/logout" class="logout-btn">
+                        <i class="fas fa-sign-out-alt"></i> Đăng xuất
+                    </a>
+                {% else %}
+                    <a href="/login" class="login-btn">
+                        <i class="fas fa-sign-in-alt"></i> Đăng nhập
+                    </a>
+                    <a href="/register" class="register-btn">
+                        <i class="fas fa-user-plus"></i> Đăng ký
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+        <div class="menu-toggle">
+            <i class="fas fa-bars"></i>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="forum-container">
+            <div class="create-post">
+                <form method="POST" enctype="multipart/form-data">
+                    <textarea name="content" placeholder="Chia sẻ về thú cưng của bạn..."></textarea>
+                    <div class="post-actions">
+                        <label for="post-image" class="btn btn-upload">
+                            <i class="fas fa-image"></i> Thêm ảnh
+                            <input type="file" id="post-image" name="image" accept="image/*">
+                        </label>
+                        <button type="submit" class="btn btn-post">Đăng bài</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="posts-feed">
+                {% for post in posts %}
+                <div class="post-card">
+                    <div class="post-header">
+                        <div class="post-author">
+                            <img src="/static/images/avatars/{{ post.avatar }}" alt="Avatar">
+                            <span>{{ post.username }}</span>
+                        </div>
+                        <span class="post-time">{{ post.created_at|time_ago }}</span>
+                    </div>
+                    <div class="post-content">
+                        <p>{{ post.content }}</p>
+                        {% if post.image_path %}
+                        <div class="post-image">
+                            <img src="{{ url_for('uploaded_file', filename=post.image_path) }}"
+                                 alt="Post image" class="post-img">
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="post-footer">
+                        <button class="like-btn {% if post.liked %}liked{% endif %}"
+                                data-post-id="{{ post.id }}">
+                            <i class="fas fa-heart"></i>
+                            <span class="like-count">{{ post.likes }}</span>
+                        </button>
+                        <button class="comment-btn">
+                            <i class="fas fa-comment"></i> Bình luận
+                        </button>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function likePost(postId) {
+            fetch(`/like_post/${postId}`, { method: 'POST' })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        const likeCount = document.querySelector(`.btn-like[onclick="likePost(${postId})"] .like-count`);
+                        likeCount.textContent = parseInt(likeCount.textContent) + 1;
+                    }
+                });
+        }
+    </script>
+</body>
+</html>

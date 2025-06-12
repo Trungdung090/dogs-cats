@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🐾 Phân loại giống chó mèo</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script defer src="{{ url_for('static', filename='js/classify.js') }}"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/classify.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <a href="/" class="logo">
+            <i class="fas fa-paw"></i>
+            <span>PetClassifier</span>
+        </a>
+        <div class="nav-links">
+            <div class="main-links">
+                <a href="/"><i class="fas fa-home"></i> Trang chủ</a>
+                <a href="/classify"><i class="fas fa-search"></i> Phân loại</a>
+<!--                <a href="/statistics"><i class="fas fa-chart-bar"></i> Thống kê</a>-->
+                <a href="/blog"><i class="fas fa-newspaper"></i> Tin Tức</a>
+<!--                <a href="/forum"><i class="fas fa-comments"></i> Diễn đàn</a>-->
+            </div>
+            <div class="auth-links">
+                {% if session.get('role') == 'admin' %}
+                    <a href="/admin"><i class="fas fa-cog"></i> Admin</a>
+                    <a href="/logout" class="logout-btn">
+                        <i class="fas fa-sign-out-alt"></i> Đăng xuất
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+        <div class="menu-toggle">
+            <i class="fas fa-bars"></i>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="main-content">
+            <div class="upload-section">
+                <h2 class="section-title">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    Tải ảnh lên
+                </h2>
+                <div class="upload-area" id="uploadArea">
+                    <i class="fas fa-image upload-icon"></i>
+                    <div class="upload-text">
+                        <strong>Kéo thả ảnh vào đây hoặc nhấp để chọn</strong>
+                    </div>
+                    <div class="upload-hint">
+                        Hỗ trợ: JPG, PNG (Tối đa 5MB)
+                    </div>
+                    <input type="file" id="uploadInput" accept="image/jpeg,image/png">
+                </div>
+                <div class="image-preview" id="imagePreview">
+                    <img id="previewImage" class="preview-image" alt="Preview">
+                </div>
+                <button class="analyze-btn" id="analyzeBtn" disabled>
+                    <i class="fas fa-search"></i>
+                    Phân loại ngay
+                </button>
+                <button class="action-btn retry-btn" id="retryBtn" style="display: none;">
+                    <i class="fas fa-redo"></i>
+                    Phân loại lại
+                </button>
+            </div>
+
+            <div class="result-section">
+                <h2 class="section-title">
+                    <i class="fas fa-star"></i>
+                    Kết quả phân loại
+                </h2>
+                <div class="loading" id="loading">
+                    <div class="spinner"></div>
+                    <p>Đang phân tích hình ảnh...</p>
+                </div>
+                <div class="placeholder-text" id="placeholderText">
+                    <i class="fas fa-search" style="font-size: 3rem; color: #667eea; margin-bottom: 1rem;"></i>
+                    <br>
+                    Chưa có kết quả - Hãy tải lên ảnh để bắt đầu!
+                </div>
+
+                <div class="result-content" id="resultContent">
+                    <img id="resultImage" class="result-image" alt="Analyzed pet">
+                    <div class="classification-result" id="classificationResult">
+                        <i class="fas fa-paw"></i>
+                        <span id="breedName"></span>
+                    </div>
+
+                    <div class="confidence-info">
+                        <p>Độ tin cậy: <strong id="confidencePercent">0%</strong></p>
+                        <div class="confidence-bar">
+                            <div class="confidence-fill" id="confidenceFill" style="width: 0%"></div>
+                        </div>
+                    </div>
+
+                    <div class="feedback-buttons" id="feedbackButtons" style="display: none;">
+                        <p style="margin-bottom: 0.5rem;">Bạn thấy kết quả:</p>
+                        <button class="feedback-btn correct-btn" id="correctBtn">
+                            <i class="fas fa-check-circle"></i> Đúng
+                        </button>
+                        <button class="feedback-btn wrong-btn" id="wrongBtn">
+                            <i class="fas fa-times-circle"></i> Sai
+                        </button>
+                    </div>
+                    <div id="feedbackMessage" class="feedback-message" style="display: none;"></div>
+
+<!--                    <div class="result-actions">-->
+<!--                        <button class="action-btn share-btn" id="shareBtn">-->
+<!--                            <i class="fas fa-share"></i>-->
+<!--                            Chia sẻ-->
+<!--                        </button>-->
+<!--                    </div>-->
+<!--                    <div class="breed-info" id="breedInfo">-->
+<!--                        <h4><i class="fas fa-info-circle"></i> Thông tin về giống</h4>-->
+<!--                        <p><strong>Đặc điểm:</strong> <span id="breedCharacteristics"></span></p>-->
+<!--                        <p><strong>Tính cách:</strong> <span id="breedPersonality"></span></p>-->
+<!--                        <p><strong>Kích thước:</strong> <span id="breedSize"></span></p>-->
+<!--                        <p><strong>Tuổi thọ:</strong> <span id="breedLifespan"></span></p>-->
+<!--                    </div>-->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <p>&copy; 2024 PetClassifier. All rights reserved. Made with ❤️ for pet lovers</p>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản trị hệ thống</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/home.css') }}">
+    <style>
+        /* CSS bổ sung riêng cho trang admin */
+        .admin-header {
+            text-align: center;
+            margin: 3rem 0;
+        }
+        .admin-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+        }
+        .admin-subtitle {
+            font-size: 1.2rem;
+            color: #6b7280;
+            font-weight: 400;
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        .stat-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+        }
+        .stat-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+
+        .stat-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #1a202c;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 1rem;
+            color: #6b7280;
+            font-weight: 500;
+        }
+
+        /* Recent Activity Section */
+        .activity-section {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #1a202c;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .section-title i {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .activity-list {
+            list-style: none;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .activity-item {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            border: 1px solid #e2e8f0;
+        }
+
+        .activity-item:hover {
+            background: #f1f5f9;
+            transform: translateX(5px);
+        }
+
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .activity-content {
+            flex: 1;
+        }
+
+        .activity-text {
+            color: #1a202c;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+
+        .activity-time {
+            color: #718096;
+            font-size: 0.9rem;
+        }
+
+        /* Biểu đồ thống kê */
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .chart-container {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            height: 450px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .chart-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+        }
+
+        .chart-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #1a202c;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            position: relative;
+            padding-bottom: 15px;
+        }
+
+        .chart-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 3px;
+        }
+
+        /* Tooltip custom */
+        .chartjs-tooltip {
+            background: rgba(0, 0, 0, 0.8) !important;
+            border-radius: 10px !important;
+            padding: 10px 15px !important;
+            color: white !important;
+            font-family: 'Poppins', sans-serif !important;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2) !important;
+            border: none !important;
+        }
+
+        .chartjs-tooltip-key {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+
+        /* Legend custom */
+        .chart-legend {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .chart-legend-item {
+            display: flex;
+            align-items: center;
+            margin: 0 10px 10px;
+            cursor: pointer;
+        }
+
+        .chart-legend-color {
+            width: 15px;
+            height: 15px;
+            border-radius: 3px;
+            margin-right: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .chart-legend-item:hover .chart-legend-color {
+            transform: scale(1.2);
+        }
+
+        canvas {
+            padding-bottom: 70px;   /* thêm không gian cho chú thích */
+            box-sizing: border-box;
+        }
+
+        /* Animation cho biểu đồ */
+        @keyframes chartFadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .chart-animate {
+            animation: chartFadeIn 0.8s ease-out forwards;
+        }
+
+        /* Responsive cho biểu đồ */
+        @media (max-width: 768px) {
+            .chart-container {
+                height: 300px;
+                padding: 1.5rem;
+            }
+
+            .chart-title {
+                font-size: 1.3rem;
+            }
+
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Custom cho biểu đồ đường */
+        .line-chart .chart-point {
+            background: white;
+            border: 3px solid;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .line-chart .chart-point:hover {
+            transform: scale(1.5);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        /* Custom cho biểu đồ tròn */
+        .doughnut-chart .chart-arc {
+            transition: all 0.3s ease;
+        }
+
+        .doughnut-chart .chart-arc:hover {
+            transform: scale(1.05);
+            filter: brightness(1.1);
+        }
+
+        /* Hiệu ứng hover cho container biểu đồ */
+        .chart-container:hover .chart-title::after {
+            width: 120px;
+            background: linear-gradient(90deg, #ff6b6b, #ffa500);
+        }
+
+        /* Admin Actions */
+        .admin-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .action-btn {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            color: #4a5568;
+            text-decoration: none;
+            text-align: center;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            border: 1px solid #e2e8f0;
+        }
+
+        .action-btn:hover {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(102, 126, 234, 0.3);
+        }
+
+        .action-btn i {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .action-btn:hover i {
+            color: white;
+        }
+
+        .action-btn.danger {
+            border-color: rgba(239, 68, 68, 0.3);
+        }
+
+        .action-btn.danger:hover {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+        }
+
+        .action-btn.success {
+            border-color: rgba(16, 185, 129, 0.3);
+        }
+
+        .action-btn.success:hover {
+            background: linear-gradient(135deg, #10b981, #059669);
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="/" class="logo">
+            <i class="fas fa-paw"></i>
+            <span>PetClassifier</span>
+        </a>
+        <div class="nav-links">
+            <div class="main-links">
+                <a href="/"><i class="fas fa-home"></i> Trang chủ</a>
+                <a href="/classify"><i class="fas fa-search"></i> Phân loại</a>
+<!--                <a href="/statistics"><i class="fas fa-chart-bar"></i> Thống kê</a>-->
+                <a href="/blog"><i class="fas fa-newspaper"></i> Tin Tức</a>
+            </div>
+            <div class="auth-links">
+                {% if session.get('role') == 'admin' %}
+                    <a href="/admin"><i class="fas fa-cog"></i> Admin</a>
+                    <a href="/logout" class="logout-btn">
+                        <i class="fas fa-sign-out-alt"></i> Đăng xuất
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+        <div class="menu-toggle">
+            <i class="fas fa-bars"></i>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="admin-header">
+            <h1 class="admin-title">
+                <i class="fas fa-shield-alt"></i>
+                Bảng Điều Khiển Quản Trị
+            </h1>
+            <p class="admin-subtitle">Quản lý và giám sát hệ thống PetClassifier</p>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="stat-number" id="total-users">0</div>
+                <div class="stat-label">Tổng người dùng</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-search"></i>
+                </div>
+                <div class="stat-number" id="total-classifications">0</div>
+                <div class="stat-label">Tổng lượt phân loại</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-calendar-day"></i>
+                </div>
+                <div class="stat-number" id="today-classifications">0</div>
+                <div class="stat-label">Lượt phân loại hôm nay</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <div class="stat-number" id="avg-accuracy">0%</div>
+                <div class="stat-label">Độ chính xác</div>
+            </div>
+        </div>
+
+        <!-- Charts Section -->
+        <div class="charts-grid">
+            <div class="chart-container">
+                <h3 class="chart-title">Thống kê theo ngày (7 ngày gần nhất)</h3>
+                <canvas id="dailyChart"></canvas>
+            </div>
+
+            <div class="chart-container">
+                <h3 class="chart-title">Phân loại theo loại thú cưng</h3>
+                <canvas id="petTypeChart"></canvas>
+            </div>
+        </div>
+
+<!--        <div class="activity-section">-->
+<!--            <h2 class="section-title">-->
+<!--                <i class="fas fa-history"></i>-->
+<!--                Hoạt động gần đây-->
+<!--            </h2>-->
+<!--            <ul class="activity-list" id="recent-activities">-->
+<!--                &lt;!&ndash; Dữ liệu sẽ được điền bằng JavaScript &ndash;&gt;-->
+<!--                <li class="activity-item loading-item">-->
+<!--                    <div class="loading"></div>-->
+<!--                    <span>Đang tải dữ liệu...</span>-->
+<!--                </li>-->
+<!--            </ul>-->
+<!--        </div>-->
+
+        <!-- Admin Actions -->
+        <div class="admin-actions">
+            <a href="/admin/users" class="action-btn">
+                <i class="fas fa-users-cog"></i>
+                <span>Quản lý người dùng</span>
+            </a>
+
+            <a href="/admin/reports" class="action-btn">
+                <i class="fas fa-chart-pie"></i>
+                <span>Báo cáo chi tiết</span>
+            </a>
+
+            <a href="/admin/settings" class="action-btn">
+                <i class="fas fa-cogs"></i>
+                <span>Cài đặt hệ thống</span>
+            </a>
+
+            <a href="/admin/backup" class="action-btn success">
+                <i class="fas fa-download"></i>
+                <span>Sao lưu dữ liệu</span>
+            </a>
+
+            <a href="/admin/logs" class="action-btn">
+                <i class="fas fa-file-alt"></i>
+                <span>Xem logs hệ thống</span>
+            </a>
+
+            <a href="/admin/maintenance" class="action-btn danger">
+                <i class="fas fa-tools"></i>
+                <span>Bảo trì hệ thống</span>
+            </a>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <p>&copy; 2024 PetClassifier. All rights reserved. Made with ❤️ for pet lovers</p>
+        </div>
+    </footer>
+
+    <script>
+        // Hàm fetch dữ liệu từ API
+        async function fetchData(url) {
+            const response = await fetch(url);
+            return await response.json();
+        }
+
+        // Hàm định dạng ngày tháng
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleString('vi-VN');
+        }
+
+        // Hàm tính thời gian đã trôi qua
+        function timeAgo(dateString) {
+            const date = new Date(dateString);
+            const now = new Date();
+            const seconds = Math.floor((now - date) / 1000);
+
+            if (seconds < 60) return `${seconds} giây trước`;
+
+            const minutes = Math.floor(seconds / 60);
+            if (minutes < 60) return `${minutes} phút trước`;
+
+            const hours = Math.floor(minutes / 60);
+            if (hours < 24) return `${hours} giờ trước`;
+
+            const days = Math.floor(hours / 24);
+            return `${days} ngày trước`;
+        }
+
+        // Load dữ liệu thống kê
+        async function loadStatistics() {
+            try {
+                // Lấy dữ liệu tổng quan
+                const stats = await fetchData('/api/admin/statistics');
+
+                // Cập nhật thẻ số liệu
+                document.getElementById('total-users').textContent = stats.total_users;
+                document.getElementById('total-classifications').textContent = stats.total_classifications;
+                document.getElementById('today-classifications').textContent = stats.today_classifications;
+                document.getElementById('avg-accuracy').textContent = `${(stats.avg_accuracy)}%`;
+
+                // Vẽ biểu đồ ngày
+                const dailyCtx = document.getElementById('dailyChart').getContext('2d');
+                new Chart(dailyCtx, {
+                    type: 'line',
+                    data: {
+                        labels: stats.time_activity.map(item => item.day),
+                        datasets: [{
+                            label: 'Lượt phân loại',
+                            data: stats.time_activity.map(item => item.count),
+                            borderColor: '#667eea',
+                            backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                            tension: 0.4,
+                            fill: true
+                        }]
+                    },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            animation: {
+                                duration: 2000,
+                                easing: 'easeOutQuart'
+                            },
+                            plugins: {
+                                legend: {
+                                    display: false
+                                },
+                                tooltip: {
+                                    backgroundColor: 'rgba(0,0,0,0.8)',
+                                    titleFont: {
+                                        family: 'Poppins',
+                                        size: 14
+                                    },
+                                    bodyFont: {
+                                        family: 'Poppins',
+                                        size: 12
+                                    },
+                                    cornerRadius: 10,
+                                    displayColors: false
+                                }
+                            },
+                            elements: {
+                                point: {
+                                    radius: 5,
+                                    hoverRadius: 8,
+                                    backgroundColor: 'white',
+                                    borderWidth: 3
+                                },
+                                line: {
+                                    tension: 0.4,
+                                    borderWidth: 3
+                                }
+                            },
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    grid: {
+                                        color: 'rgba(0,0,0,0.05)'
+                                    },
+                                    ticks: {
+                                        font: {
+                                            family: 'Poppins'
+                                        }
+                                    }
+                                },
+                                x: {
+                                    grid: {
+                                        display: false
+                                    },
+                                    ticks: {
+                                        font: {
+                                            family: 'Poppins'
+                                        }
+                                    }
+                                }
+                            },
+                            onHover: (event, chartElement) => {
+                                if (event.native) {
+                                    event.native.target.style.cursor = chartElement[0] ? 'pointer' : 'default';
+                                }
+                            }
+                        }
+                    });
+
+                // Vẽ biểu đồ phân bổ giống
+                const petTypeCtx = document.getElementById('petTypeChart').getContext('2d');
+                // Tạo mảng màu động theo số lượng giống
+                const dynamicColors = stats.breed_distribution.map((_, i) => {
+                    const palette = ['#667eea', '#764ba2', '#ffd700', '#a8e6cf', '#dcedc1', '#ffaaa5', '#ff8a65', '#4db6ac', '#ba68c8', '#81c784', '#f06292', '#fdd835', '#90caf9'];
+                    return palette[i % palette.length];
+                });
+                new Chart(petTypeCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: stats.breed_distribution.map(item => item.label),
+                        datasets: [{
+                            data: stats.breed_distribution.map(item => item.count),
+                            backgroundColor: dynamicColors,
+                            borderWidth: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        cutout: '55%',
+                        animation: {
+                            animateScale: true,
+                            animateRotate: true
+                        },
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels: {
+                                    font: {
+                                        family: 'Poppins'
+                                    },
+                                    padding: 20,
+                                    usePointStyle: true,
+                                    pointStyle: 'circle'
+                                }
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        const label = context.label || '';
+                                        const value = context.raw || 0;
+                                        const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                        const percentage = Math.round((value / total) * 100);
+                                        return `${label}: ${value} (${percentage}%)`;
+                                    }
+                                }
+                            }
+                        },
+                        elements: {
+                            arc: {
+                                borderWidth: 0,
+                                hoverOffset: 10
+                            }
+                        }
+                    }
+                });
+
+                // Cập nhật hoạt động gần đây
+                const activitiesList = document.getElementById('recent-activities');
+                activitiesList.innerHTML = '';
+
+                stats.recent.forEach(activity => {
+                    const icon = activity.breed.includes('Chó') ? 'fa-dog' : activity.breed.includes('Mèo') ? 'fa-cat' : 'fa-paw';
+
+                    const item = document.createElement('li');
+                    item.className = 'activity-item';
+                    item.innerHTML = `
+                        <div class="activity-icon">
+                            <i class="fas ${icon}"></i>
+                        </div>
+                        <div class="activity-content">
+                            <div class="activity-text">Phân loại: ${activity.breed} (${activity.confidence}%)</div>
+                            <div class="activity-time">${timeAgo(activity.timestamp)}</div>
+                        </div>
+                    `;
+                    activitiesList.appendChild(item);
+                });
+
+            } catch (error) {
+                console.error('Lỗi khi tải dữ liệu:', error);
+                // Hiển thị thông báo lỗi nếu cần
+            }
+        }
+
+        // Tải dữ liệu khi trang được load
+        document.addEventListener('DOMContentLoaded', loadStatistics);
+    </script>
+</body>
+</html>

@@ -1,0 +1,90 @@
+.breed-detail-section {
+    padding: 2rem 0;
+}
+
+.breed-header h1 {
+    color: #764ba2;
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.breed-meta {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.badge {
+    padding: 0.3rem 1rem;
+    border-radius: 50px;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.dog-badge {
+    background: #4facfe;
+    color: white;
+}
+
+.cat-badge {
+    background: #f093fb;
+    color: white;
+}
+
+.size-badge {
+    background: #f5576c;
+    color: white;
+}
+
+.breed-content {
+    display: flex;
+    gap: 3rem;
+    margin-top: 2rem;
+}
+
+.breed-gallery {
+    flex: 1;
+}
+
+.main-image {
+    width: 100%;
+    border-radius: 20px;
+    margin-bottom: 1rem;
+}
+
+.thumbnail-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+}
+
+.breed-info {
+    flex: 1;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+    margin: 2rem 0;
+}
+
+.info-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+
+.info-card h3 {
+    color: #764ba2;
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+}
+
+.features-chart {
+    margin-top: 2rem;
+    background: white;
+    padding: 2rem;
+    border-radius: 15px;
+}

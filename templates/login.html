@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🐾 Phân loại giống chó mèo</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Font Awesome cho icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/auth.css') }}">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<!--    <script defer src="{{ url_for('static', filename='js/auth.js') }}"></script>-->
+</head>
+<body>
+    <nav class="navbar">
+        <a href="/" class="logo">
+            <i class="fas fa-paw"></i>
+            <span>PetClassifier</span>
+        </a>
+        <div class="nav-links">
+            <div class="main-links">
+                <a href="/"><i class="fas fa-home"></i> Trang chủ</a>
+                <a href="/classify"><i class="fas fa-search"></i> Phân loại</a>
+<!--                <a href="/statistics"><i class="fas fa-chart-bar"></i> Thống kê</a>-->
+                <a href="/blog"><i class="fas fa-newspaper"></i> Tin Tức</a>
+<!--                <a href="/forum"><i class="fas fa-comments"></i> Diễn đàn</a>-->
+            </div>
+            <div class="auth-links">
+                {% if session.get('role') == 'admin' %}
+                    <a href="/profile" class="user-profile">
+<!--                        <img src="{{ url_for('static', filename='images/avatars/' + session.get('avatar', 'default.jpg')) }}"-->
+<!--                             alt="Avatar" class="user-avatar">-->
+<!--                        <span>{{ session['username'] }}</span>-->
+                    </a>
+                    <a href="/admin"><i class="fas fa-cog"></i> Admin</a>
+                    <a href="/logout" class="logout-btn">
+                        <i class="fas fa-sign-out-alt"></i> Đăng xuất
+                    </a>
+                {% else %}
+<!--                    <a href="/login" class="login-btn">-->
+<!--                        <i class="fas fa-sign-in-alt"></i> Đăng nhập-->
+<!--                    </a>-->
+<!--                    <a href="/register" class="register-btn">-->
+<!--                        <i class="fas fa-user-plus"></i> Đăng ký-->
+<!--                    </a>-->
+                {% endif %}
+            </div>
+        </div>
+        <div class="menu-toggle">
+            <i class="fas fa-bars"></i>
+        </div>
+    </nav>
+
+    <div class="auth-container">
+        <div class="auth-card">
+            <h2><i class="fas fa-sign-in-alt"></i> Đăng nhập</h2>
+            {% if error %}
+                <div class="alert alert-danger">{{ error }}</div>
+            {% endif %}
+            <form method="POST">
+                <div class="form-group">
+                    <label><i class="fas fa-user"></i> Tên đăng nhập *</label>
+                    <input type="text" name="username" required>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-lock"></i> Mật khẩu *</label>
+                    <input type="password" name="password" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Đăng nhập</button>
+            </form>
+<!--            <p>Chưa có tài khoản? <a href="{{ url_for('register') }}">Đăng ký ngay</a></p>-->
+        </div>
+    </div>
+</body>
+</html>

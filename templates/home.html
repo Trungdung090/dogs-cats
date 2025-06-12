@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🐾 Phân loại giống chó mèo</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script defer src="{{ url_for('static', filename='js/home.js') }}"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/home.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <a href="/" class="logo">
+            <i class="fas fa-paw"></i>
+            <span>PetClassifier</span>
+        </a>
+        <div class="nav-links">
+            <div class="main-links">
+                <a href="/"><i class="fas fa-home"></i> Trang chủ</a>
+                <a href="/classify"><i class="fas fa-search"></i> Phân loại</a>
+<!--                <a href="/statistics"><i class="fas fa-chart-bar"></i> Thống kê</a>-->
+                <a href="/blog"><i class="fas fa-newspaper"></i> Tin Tức</a>
+<!--                <a href="/forum"><i class="fas fa-comments"></i> Diễn đàn</a>-->
+            </div>
+            <div class="auth-links">
+                {% if session.get('role') == 'admin' %}
+                    <a href="/admin"><i class="fas fa-cog"></i> Admin</a>
+                    <a href="/logout" class="logout-btn">
+                        <i class="fas fa-sign-out-alt"></i> Đăng xuất
+                    </a>
+                {% else %}
+<!--                    <a href="/login" class="login-btn">-->
+<!--                        <i class="fas fa-sign-in-alt"></i> Đăng nhập-->
+<!--                    </a>-->
+<!--                    <a href="/register" class="register-btn">-->
+<!--                        <i class="fas fa-user-plus"></i> Đăng ký-->
+<!--                    </a>-->
+                {% endif %}
+            </div>
+        </div>
+        <div class="menu-toggle">
+            <i class="fas fa-bars"></i>
+        </div>
+    </nav>
+
+    <div class="container">
+        <section class="hero-section">
+            <div class="hero-content">
+                <h1>Hệ thống nhận diện giống chó mèo chính xác và nhanh chóng</h1>
+                <p>Ứng dụng AI tiên tiến giúp nhận diện giống chó mèo và cung cấp thông tin chi tiết về đặc điểm, tính cách của từng giống một cách chính xác và nhanh chóng</p>
+                <div class="hero-buttons">
+                    <a href="/classify" class="btn btn-primary"><i class="fas fa-camera"></i>Bắt đầu phân loại</a>
+                    <a href="#features" class="btn btn-secondary"><i class="fas fa-star"></i>Tính năng nổi bật</a>
+                </div>
+            </div>
+            <div class="hero-image">
+                <img src="static/images/cho-meo.jpg" alt="Chó mèo dễ thương">
+            </div>
+        </section>
+
+        <section class="breed-info-section">
+            <h2><i class="fas fa-paw"></i> Một số giống phổ biến</h2>
+            <div class="breed-carousel">
+                <div class="carousel-nav">
+                    <button class="carousel-btn prev-btn"><i class="fas fa-chevron-left"></i></button>
+                    <button class="carousel-btn next-btn"><i class="fas fa-chevron-right"></i></button>
+                </div>
+                <div class="breed-grid">
+                    <div class="breed-card">
+                        <img src="static/images/beagle.jpg" alt="Beagle">
+                        <div class="breed-details">
+                            <h3>Beagle</h3>
+                            <p><strong>Đặc điểm:</strong> Tai dài rủ, mõm vuông, lông ngắn ba màu</p>
+                            <p><strong>Tính cách:</strong> Thân thiện, tò mò, vui vẻ</p>
+                            <a href="#" onclick="showBreedDetail('Beagle')" class="btn-more">Xem chi tiết</a>
+                        </div>
+                    </div>
+                    <div class="breed-card">
+                        <img src="static/images/bulldog.jpg" alt="Bulldog">
+                        <div class="breed-details">
+                            <h3>Bulldog</h3>
+                            <p><strong>Đặc điểm:</strong> Da nhăn, mặt bẹt, thân hình chắc nịch</p>
+                            <p><strong>Tính cách:</strong> Kiên định, thân thiện, dũng cảm</p>
+                            <a href="#" onclick="showBreedDetail('Bulldog')" class="btn-more">Xem chi tiết</a>
+                        </div>
+                    </div>
+                    <div class="breed-card">
+                        <img src="static/images/corgi.jpg" alt="Corgi">
+                        <div class="breed-details">
+                            <h3>Corgi</h3>
+                            <p><strong>Đặc điểm:</strong> Chân ngắn, tai to, đuôi cộc</p>
+                            <p><strong>Tính cách:</strong> Thông minh, hoạt bát, trung thành</p>
+                            <a href="#" onclick="showBreedDetail('Corgi')" class="btn-more">Xem chi tiết</a>
+                        </div>
+                    </div>
+                    <div class="breed-card">
+                        <img src="static/images/poodle.jpg" alt="Poodle">
+                        <div class="breed-details">
+                            <h3>Poodle</h3>
+                            <p><strong>Đặc điểm:</strong> Lông xoăn, dáng thanh thoát</p>
+                            <p><strong>Tính cách:</strong> Thông minh, năng động, dễ huấn luyện</p>
+                            <a href="#" onclick="showBreedDetail('Poodle')" class="btn-more">Xem chi tiết</a>
+                        </div>
+                    </div>
+                    <div class="breed-card">
+                        <img src="static/images/pomeranian.jpg" alt="Pomeranian">
+                        <div class="breed-details">
+                            <h3>Pomeranian</h3>
+                            <p><strong>Đặc điểm:</strong> Kích thước nhỏ, lông dày, mặt fox</p>
+                            <p><strong>Tính cách:</strong> Sôi nổi, thông minh, can đảm</p>
+                            <a href="#" onclick="showBreedDetail('Pomeranian')" class="btn-more">Xem chi tiết</a>
+                        </div>
+                    </div>
+                    <div class="breed-card">
+                        <img src="static/images/bengal.jpg" alt="Bengal">
+                        <div class="breed-details">
+                            <h3>Bengal</h3>
+                            <p><strong>Đặc điểm:</strong> Lông đốm như báo, cơ bắp</p>
+                            <p><strong>Tính cách:</strong> Năng động, tò mò, thân thiện</p>
+                            <a href="#" onclick="showBreedDetail('Bengal')" class="btn-more">Xem chi tiết</a>
+                        </div>
+                    </div>
+                    <div class="breed-card">
+                        <img src="static/images/british-shorthair.jpg" alt="British Shorthair">
+                        <div class="breed-details">
+                            <h3>British Shorthair</h3>
+                            <p><strong>Đặc điểm:</strong> Lông ngắn dày, mặt tròn, mắt to</p>
+                            <p><strong>Tính cách:</strong> Điềm tĩnh, độc lập, dễ chăm sóc</p>
+                            <a href="#" onclick="showBreedDetail('British Shorthair')" class="btn-more">Xem chi tiết</a>
+                        </div>
+                    </div>
+                    <div class="breed-card">
+                        <img src="static/images/maine-coon.jpg" alt="Maine Coon">
+                        <div class="breed-details">
+                            <h3>Maine Coon</h3>
+                            <p><strong>Đặc điểm:</strong> Kích thước lớn, lông dài, đuôi rủ</p>
+                            <p><strong>Tính cách:</strong> Hiền lành, thân thiện, thông minh</p>
+                            <a href="#" onclick="showBreedDetail('Maine Coon')" class="btn-more">Xem chi tiết</a>
+                        </div>
+                    </div>
+                    <div class="breed-card">
+                        <img src="static/images/persian.jpg" alt="Persian">
+                        <div class="breed-details">
+                            <h3>Persian</h3>
+                            <p><strong>Đặc điểm:</strong> Mặt tịt, lông dài, dáng quý tộc</p>
+                            <p><strong>Tính cách:</strong> Êm dịu, điềm tĩnh, thích được vuốt ve</p>
+                            <a href="#" onclick="showBreedDetail('Persian')" class="btn-more">Xem chi tiết</a>
+                        </div>
+                    </div>
+                    <div class="breed-card">
+                        <img src="static/images/ragdoll.jpg" alt="Ragdoll">
+                        <div class="breed-details">
+                            <h3>Ragdoll</h3>
+                            <p><strong>Đặc điểm:</strong> Lông dài, mắt xanh, thân hình lớn</p>
+                            <p><strong>Tính cách:</strong> Êm dịu, thân thiện, dễ bảo</p>
+                            <a href="#" onclick="showBreedDetail('Ragdoll')" class="btn-more">Xem chi tiết</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Breed Detail Popup -->
+        <div id="breedPopup" class="popup-container" style="display: none;">
+            <div class="popup-content">
+                <button class="close-btn" onclick="closeBreedDetail()">&times;</button>
+                <div class="popup-header">
+                    <h2 id="popupBreedName">Beagle</h2>
+                </div>
+                <div class="popup-body">
+                    <img id="popupBreedImage" src="" alt="Breed Image">
+                    <div class="breed-info">
+                        <!-- Thông tin sẽ được điền bằng JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <section class="features-section" id="features">
+            <h2><i class="fas fa-star"></i> Tính năng nổi bật</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <i class="fas fa-robot"></i>
+                    <h3>AI Tiên tiến</h3>
+                    <p>Sử dụng công nghệ trí tuệ nhân tạo hiện đại để nhận diện chính xác hơn 100 giống chó mèo với độ chính xác lên đến 95%</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-info-circle"></i>
+                    <h3>Thông tin chi tiết</h3>
+                    <p>Cung cấp đầy đủ thông tin về đặc điểm, tính cách, cách chăm sóc và lịch sử của từng giống thú cưng</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-users"></i>
+                    <h3>Cộng đồng sôi động</h3>
+                    <p>Kết nối với hàng nghìn người yêu thú cưng, chia sẻ kinh nghiệm và nhận tư vấn từ các chuyên gia</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-mobile-alt"></i>
+                    <h3>Dễ sử dụng</h3>
+                    <p>Giao diện thân thiện, chỉ cần chụp ảnh là có ngay kết quả phân loại nhanh chóng và chính xác</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-shield-alt"></i>
+                    <h3>Bảo mật tuyệt đối</h3>
+                    <p>Cam kết bảo vệ thông tin cá nhân và hình ảnh của người dùng với công nghệ mã hóa tiên tiến</p>
+                </div>
+<!--                <div class="feature-card">-->
+<!--                    <i class="fas fa-clock"></i>-->
+<!--                    <h3>24/7 Hỗ trợ</h3>-->
+<!--                    <p>Đội ngũ chăm sóc khách hàng và chuyên gia thú y sẵn sàng hỗ trợ bạn mọi lúc, mọi nơi</p>-->
+<!--                </div>-->
+            </div>
+        </section>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <p>&copy; 2024 PetClassifier. All rights reserved. Made with ❤️ for pet lovers</p>
+        </div>
+    </footer>
+</body>
+</html>
